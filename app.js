@@ -7,6 +7,8 @@ const app = new Koa()
 const koaCors = require('@koa/cors')
 const koaError = require('koa-json-error')
 const koaParameter = require('koa-parameter')
+const koaJwt = require('koa-jwt')
+const config = require('./config/config.default')
 
 koaParameter(app)
 app.use(koaCors())
@@ -48,6 +50,13 @@ app.use(koaBody({
 // 中间件：MongoDB 数据库操作辅助
 app.use(mongoMiddleware())
 
+
+
+app.use(koaJwt({
+  secret: config.jwt.secret   // JWT 密钥
+}).unless({
+  path: [/^\/api\/(?!user)/]  // 只对起始路径为 /api/user 的 API 接口进行鉴权
+}))
 
 // 中间件：路由相关
 app.use(router.routes())

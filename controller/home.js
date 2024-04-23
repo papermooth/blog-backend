@@ -13,6 +13,11 @@ module.exports = {
       ctx.body = {
         msg: 'hello,world jj hh'
       }
-    }
+    },
     
+    async test2(ctx){
+      ctx.body = {
+        msg:'请求成功，通过鉴权'
+      }
+    }
   }

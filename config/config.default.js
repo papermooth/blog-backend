@@ -1,7 +1,7 @@
 const config = {
     // 相关配置
     mongodb: {
-      uri: 'mongodb://root:123456@localhost:27017/classroom',
+      uri: 'mongodb://root:123456@localhost:27017/blog',
       options: {
         // useUnifiedTopology: true,
         // useNewUrlParser: true,
