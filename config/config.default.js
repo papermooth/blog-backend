@@ -3,8 +3,8 @@ const config = {
     mongodb: {
       uri: 'mongodb://root:123456@localhost:27017/classroom',
       options: {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
+        // useUnifiedTopology: true,
+        // useNewUrlParser: true,
         authSource: 'admin'
       }
     },
