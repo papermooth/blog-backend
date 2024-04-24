@@ -101,13 +101,65 @@ async function createArticle(ctx, articleInfo) {
   async function getArticleById(ctx, id) {
     const articleColl = ctx.mongoClient.db().collection('articles')
     return articleColl.findOne({ _id:new ObjectId(id) })
+    
+  
   }
   
 
+  async function removeArticle(ctx, id) {
+    // 参数处理
+    const currentUserId =new ObjectId(ctx.state.user.sub)
+  
+    // 删除文章
+    const articleColl = ctx.mongoClient.db().collection('articles')
+    const result = await articleColl.deleteOne({
+      _id:new ObjectId(id),
+      ownerId: currentUserId
+    })
+  
+    // 判断是否成功删除
+    if (result.deletedCount === 0) {
+      return ctx.throw({ code: 10203, message: '要删除的文章不存在，或当前用户无权限删除！' })
+    }
+  }
   
   
+  async function updateArticle(ctx, id, articleInfo) {
+    // 参数处理
+    const currentUserId =new ObjectId(ctx.state.user.sub)
+    const categoryId =new ObjectId(articleInfo.categoryId)
+  
+    const {title, summary,content} = articleInfo
+  
+    // 从文章正文中提取第一张图片作为封面
+    const thumbnail = content.match(/<img\s(.*?)\s?src="(.*?)"/)?.[2]
+  
+    // 修改文章
+    const articleColl = ctx.mongoClient.db().collection('articles')
+    const result = await articleColl.updateOne({
+      _id:new ObjectId(id),
+      ownerId: currentUserId
+    }, {
+      $set: {
+        categoryId,
+        title,
+        summary,
+        content,
+        thumbnail,
+        updatedAt: new Date()
+      }
+    })
+  
+    // 判断是否成功修改
+    if (result.modifiedCount === 0) {
+      return ctx.throw({ code: 10202, message: '要修改的文章不存在，或当前用户无权限修改！' })
+    }
+  }
+
   module.exports = {
     createArticle,
     listArticles,
-    getArticleById
+    getArticleById,
+    removeArticle,
+    updateArticle
   }

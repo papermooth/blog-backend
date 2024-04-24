@@ -1,4 +1,4 @@
-const { createArticle,listArticles,getArticleById } = require('../service/article')
+const { createArticle,listArticles,getArticleById,removeArticle,updateArticle } = require('../service/article')
 
 module.exports = {
   
@@ -47,6 +47,45 @@ console.log(ctx.request.body)
       data: result
     }
   },
+
+  async remove(ctx) {
+    // 获取路径中的动态参数 id
+    const id = ctx.params.id
+
+    // 删除文章
+    await removeArticle(ctx, id)
+
+    // 返回成功数据
+    ctx.body = {
+      code: 0,
+      message: '文章删除成功',
+      data: true
+    }
+  },
+
+  async update(ctx) {
+    // 校验参数
+    ctx.verifyParams({
+      categoryId: "string",
+      title: "string",
+      summary: "string",
+      content: "string",
+    })
+
+    // 获取路径中的动态参数 id
+    const id = ctx.params.id
+
+    // 修改文章
+    await updateArticle(ctx, id, ctx.request.body)
+
+    // 返回成功数据
+    ctx.body = {
+      code: 0,
+      message: '文章修改成功',
+      data: true
+    }
+  },
+
 
   
 }
